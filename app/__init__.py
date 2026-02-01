@@ -7,7 +7,7 @@ from app.db import db
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object("config.py")
+    app.config.from_object("config")
 
     # initialize login manager for authentications
     login_manager = LoginManager()
@@ -20,7 +20,8 @@ def create_app():
         return db.query(Users).get(int(user_id))
     
     # register blueprints
-
+    from app.routes.main import bp as main_bp
+    app.register_blueprint(main_bp)
 
     # db removal after requests
     @app.teardown_appcontext
