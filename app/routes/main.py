@@ -6,4 +6,10 @@ bp = Blueprint("main", __name__)
 
 @bp.route("/")
 def index():
+    if current_user.is_authenticated:
+        if current_user.role == "admin":
+            return redirect(url_for("admin.dashboard"))
+        else:
+            return redirect(url_for("student.dashboard"))
+    
     return render_template("index.html")
