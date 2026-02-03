@@ -25,7 +25,7 @@ def login():
             return redirect(url_for("main.index"))
 
         
-        flash("Invalid credentials", "error")
+        flash("Invalid credentials", "warning")
 
     return render_template("login.html")
 

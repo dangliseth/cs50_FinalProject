@@ -8,8 +8,8 @@ bp = Blueprint("main", __name__)
 def index():
     if current_user.is_authenticated:
         if current_user.role == "admin":
-            return redirect(url_for("admin.dashboard"))
+            return redirect(url_for("admin.home"))
         else:
-            return redirect(url_for("student.dashboard"))
+            return redirect(url_for("student.home"))
     
     return render_template("index.html")

@@ -1,0 +1,5 @@
+.flashes {
+    position: fixed;
+    left: 45vw;
+    z-index: 99;
+}
