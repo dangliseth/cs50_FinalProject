@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Add a Subject{% endblock %}
+
+{% block body %}
+    <div class="container-fluid py-5">
+        <div class="col-sm-7 mx-auto">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="card-title">Add a New Subject</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('admin.add_subject') }}" method="post" class="g-4 align-items-center">
+                        {% for col in model.__table__.columns %}
+                            {% if col.name != "id" %}                    
+                                <div class="form-floating my-2 position-relative">
+                                    <input type="text" 
+                                        id="{{ col.name }}" 
+                                        name="{{ col.name }}" 
+                                        class="form-control" 
+                                        placeholder="name123"
+                                        {% if not col.nullable %}required{% endif %}>
+                                    <label for="{{ col.name }}">{{ col.name | capitalize }}</label>
+                                    {% if not col.nullable %}
+                                        <span id="{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
+                                            *required
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <button type="submit" class="btn btn-primary mt-2 mx-auto">Add Subject</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

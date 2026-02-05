@@ -3,5 +3,101 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
+<div class="container-fluid py-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Admin Homepage</h2>
+        <div>
+            <a href="#" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> New Student
+            </a>
+            <a href="{{ url_for('admin.add_subject') }}" class="btn btn-outline-dark">
+                <i class="bi bi-journal-plus"></i> New Subject
+            </a>
+            <a href="#" class="btn btn-outline-dark">
+                <i class="bi bi-journal-plus"></i> New Program
+            </a>
+        </div>
+    </div>
 
-{% endblock }
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Students</h5>
+                    <p class="display-4">{{ student_count }}</p>
+                    <small>Registered in the system</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Active Programs</h5>
+                    <p class="display-4">{{ program_count }}</p>
+                    <small>Degrees offered</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Subjects</h5>
+                    <p class="display-4">{{ subject_count }}</p>
+                    <small>across all curriculums</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Recently Enrolled Students</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Program</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in recent_students %}
+                        <tr>
+                            <td>#{{ student.id }}</td>
+                            <td>
+                                <strong>{{ student.last_name }}, {{ student.first_name }}</strong>
+                            </td>
+                            <td>
+                                {% if student.programs %}
+                                    {{ student.programs[0].code }}
+                                {% else %}
+                                    <span class="text-muted">Unassigned</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-success">Active</span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <a href="#" class="card-link">View All Students →</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
