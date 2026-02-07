@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %} | Home{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -22,7 +22,7 @@
 
     <div class="row g-4 mb-4">
         <div class="col-md-4">
-            <div class="card text-white bg-primary h-100">
+            <div class="card text-white bg-dark h-100 shadow">
                 <div class="card-body">
                     <h5 class="card-title">Total Students</h5>
                     <p class="display-4">{{ student_count }}</p>
@@ -32,8 +32,8 @@
         </div>
         
         <div class="col-md-4">
-            <div class="card text-white bg-success h-100">
-                <div class="card-body">
+            <div class="card text-white bg-white h-100 shadow">
+                <div class="card-body text-dark">
                     <h5 class="card-title">Active Programs</h5>
                     <p class="display-4">{{ program_count }}</p>
                     <small>Degrees offered</small>
@@ -42,8 +42,8 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card text-white bg-info h-100">
-                <div class="card-body">
+            <div class="card text-white bg-white h-100 shadow">
+                <div class="card-body text-dark">
                     <h5 class="card-title">Total Subjects</h5>
                     <p class="display-4">{{ subject_count }}</p>
                     <small>across all curriculums</small>
@@ -52,8 +52,8 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-white py-3">
+    <div class="card bg-dark">
+        <div class="card-header py-3 text-white">
             <h5 class="mb-0">Recently Enrolled Students</h5>
         </div>
         <div class="card-body p-0">
@@ -95,7 +95,7 @@
             </div>
         </div>
         <div class="card-footer bg-white">
-            <a href="#" class="card-link">View All Students →</a>
+            <a href="#" class="card-link btn btn-primary" role="button">View All Students →</a>
         </div>
     </div>
 

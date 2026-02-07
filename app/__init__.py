@@ -5,6 +5,8 @@ from app.models import Users
 
 from app.db import db
 
+import re
+
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile("config.py")
@@ -26,6 +28,19 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(admin_bp, url_prefix="/admin")
+
+    # have a humanize function for templates
+    def humanize_label(value):
+        # handle camel cases: "firstName" -> "First Name"
+        value = re.sub(r"(?<!^)(?=[A-Z])", " ", value)
+
+        # handle snake_cases: "first_name" -> "First Name"
+        value = value.replace("_", " ")
+
+        return value.title()
+    
+    # add humanize_function into templates as humanize
+    app.add_template_filter(humanize_label, "humanize")
 
     # db removal after requests
     @app.teardown_appcontext

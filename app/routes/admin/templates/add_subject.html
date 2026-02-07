@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Add a Subject{% endblock %}
+{% block title %} | Add a Subject{% endblock %}
 
 {% block body %}
     <div class="container-fluid py-5">
@@ -20,7 +20,7 @@
                                         class="form-control" 
                                         placeholder="name123"
                                         {% if not col.nullable %}required{% endif %}>
-                                    <label for="{{ col.name }}">{{ col.name | capitalize }}</label>
+                                    <label for="{{ col.name }}">{{ col.name | humanize }}</label>
                                     {% if not col.nullable %}
                                         <span id="{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
                                             *required

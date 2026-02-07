@@ -14,7 +14,11 @@ def home():
 
     return render_template("home.html", student_count=student_count, program_count=program_count, subject_count=subject_count)
 
-@bp.route("/subject/add")
+@bp.route("/subject/add", methods=["GET", "POST"])
 def add_subject():
+    if request.method == "POST":
+        code = request.form["code"]
+        title = request.form["title"]
+        name = request.form["name"]
 
     return render_template("add_subject.html", model=Subjects)

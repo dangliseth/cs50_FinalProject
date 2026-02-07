@@ -3,3 +3,9 @@
     left: 45vw;
     z-index: 99;
 }
+
+#loginError {
+    position: fixed;
+    left: 45vw;
+    z-index: 99;
+}
