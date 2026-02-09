@@ -4,8 +4,10 @@
     z-index: 99;
 }
 
-#loginError {
+.alert {
     position: fixed;
-    left: 45vw;
+    top: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 99;
 }

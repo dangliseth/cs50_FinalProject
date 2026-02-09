@@ -1,3 +1,7 @@
 {
-    "editor.suggest.preview": true
+    "editor.suggest.preview": true,
+    "editor.quickSuggestions": {
+        "other": "off"
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": true
 }

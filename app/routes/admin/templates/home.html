@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %} | Home{% endblock %}
+{% block title %} | Admin Home{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='styles.css') }}">
+{% endblock%}
 
 {% block body %}
+{% include "add_subject_modal.html" %}
 <div class="container-fluid py-4">
     
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -11,9 +16,9 @@
             <a href="#" class="btn btn-primary">
                 <i class="bi bi-person-plus"></i> New Student
             </a>
-            <a href="{{ url_for('admin.add_subject') }}" class="btn btn-outline-dark">
+            <button type="button" data-bs-toggle="modal" class="btn btn-outline-dark" data-bs-target="#add-subjectModal">
                 <i class="bi bi-journal-plus"></i> New Subject
-            </a>
+            </button>
             <a href="#" class="btn btn-outline-dark">
                 <i class="bi bi-journal-plus"></i> New Program
             </a>
@@ -98,6 +103,8 @@
             <a href="#" class="card-link btn btn-primary" role="button">View All Students →</a>
         </div>
     </div>
-
 </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('admin.static', filename='script.js') }}"></script>
 {% endblock %}
