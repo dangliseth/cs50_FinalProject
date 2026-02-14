@@ -1,0 +1,65 @@
+<div class="modal fade" id="add-programModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="add-programModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content px-3 py-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Add a Program</h5>
+                <button type="button" class="btn-close btn btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="add-programBody">
+                <form action="{{ url_for('admin.add_program') }}" method="post" class="g-4 align-items-center" id="add-programForm">
+                {% for col in programs.__table__.columns %}
+                    {% if col.name != "id" %}                    
+                        <div class="form-floating my-2 position-relative">
+                            <input type="text" 
+                                id="{{ col.name }}" 
+                                name="{{ col.name }}" 
+                                class="form-control" 
+                                placeholder="name123"
+                                {% if not col.nullable %}required{% endif %}>
+                            <label for="{{ col.name }}">{{ col.name | humanize }}</label>
+                            {% if not col.nullable %}
+                                <span id="{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                    <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                    <div id="subject-container">
+                        <div class="form-floating my-2 position-relative subject-entry">
+                            <select id="subject-code" 
+                            name="subject-code" 
+                            class="form-select form-select-sm" 
+                            required>
+                                <option value="" selected>Select a Subject</option>
+                            {% for subject in all_subjects %}
+                                <option value="{{ subject.code }}">{{ subject.name }}</option>
+                            {% endfor %}
+                            </select>
+                            <label for="subject-code">Subject code</label>
+                            <span id="subject-codeHelpInline" class="position-absolute bottom-50 start-10 translate-middle-y me-3">
+                                <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-floating my-2 position-relative subject-entry">
+                        <select id="required" name="required" class="form-select form-select-sm" required>
+                            <option value="" selected>Is this subject required for this program?</option>
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
+                        </select>
+                        <label for="required">Required?</label>
+                        <span id="requiredHelpInline" class="position-absolute bottom-50 start-10 translate-middle-y me-3">
+                            <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="d-flex">
+                        <button type="button" id="add-subject-btn" class="btn btn-outline-secondary btn-sm">Add Another Subject<i class="fa-solid fa-plus fa-fade ms-1"></i></button>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2 position-relative bottom-0 start-50 translate-middle-x">Add Program</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

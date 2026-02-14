@@ -1,12 +1,13 @@
-<div class="modal fade" id="add-subjectModal" tabindex="-1" aria-labelledby="add-subjectModalLabel" aria-hidden="true">
+<div class="modal fade" id="add-subjectModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="add-subjectModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content px-3 py-3">
             <div class="modal-header">
-                <h5 class="modal-title">Add a New Subject</h5>
+                <h5 class="modal-title">Add a Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form action="{{ url_for('admin.add_subject') }}" method="post" class="g-4 align-items-center" id="addForm">
-                {% for col in model.__table__.columns %}
+            <div class="modal-body" id="add-subjectBody">
+                <form action="{{ url_for('admin.add_subject') }}" method="post" class="g-4 align-items-center" id="add-subjectForm">
+                {% for col in subjects.__table__.columns %}
                     {% if col.name != "id" %}                    
                         <div class="form-floating my-2 position-relative">
                             <input type="text" 
@@ -18,13 +19,13 @@
                             <label for="{{ col.name }}">{{ col.name | humanize }}</label>
                             {% if not col.nullable %}
                                 <span id="{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
-                                    *required
+                                    <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
                                 </span>
                             {% endif %}
                         </div>
                     {% endif %}
                 {% endfor %}
-                    <button type="submit" class="btn btn-primary mt-2 mx-auto">Add Subject</button>
+                    <button type="submit" class="btn btn-primary mt-2 position-relative bottom-0 start-50 translate-middle-x">Add Subject</button>
                 </form>
             </div>
         </div>
