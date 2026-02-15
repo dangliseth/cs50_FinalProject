@@ -38,16 +38,24 @@ $("button#add-subject-btn").on("click", () => {
 
     // Find the select and label within the cloned element
     const select = clone.find("select");
-    const label = clone.find("label");
+    const labelSubject = clone.find("label[for^='subject-code']");
+    const labelRequired = clone.find("label[for^='required']")
+    const checkbox = clone.find("input[type='checkbox']");
 
     // Create a new unique ID. Counting existing subject entries is more robust
     // than counting all children, in case other elements are present.
-    const newId = "subject-code-" + container.children(".subject-entry").length;
+    const newIdSubject = "subject-code-" + container.children(".subject-entry").length;
+    const newIdRequired = "required-" + container.children(".subject-entry").length;
 
     // Set the new ID on the select, reset its value, and link the label to it
-    select.attr("id", newId).prop("selectedIndex", 0);
-    select.attr("name", newId);
-    label.attr("for", newId);
+    select.attr("id", newIdSubject).prop("selectedIndex", 0);
+    select.attr("name", newIdSubject);
+    checkbox.attr("name", newIdRequired);
+    checkbox.attr("id", newIdRequired);
+    checkbox.prop("checked", false);
+    labelSubject.attr("for", newIdSubject);
+    labelRequired.attr("for", newIdRequired);
+
 
     // Add the newly created element to the DOM
     container.append(clone);

@@ -68,15 +68,28 @@ def add_program():
             code = request.form.get("code")
             title = request.form.get("title")
             name = request.form.get("name")
-            required = bool(request.form.get("required"))
+            
+            # subject and subject requirement dictionary.
+            subjectsAndRequirements = {}
+            i= 0
+            while True:
+                # check if there are still subjects in form.
+                subjectKey = f"subject-code-{i}"
+                if subjectKey not in request.form:
+                    break
 
-            # subject-code-i iteration from request.form
-            subjectCodes = []
-            for key in request.form:
-                if key.startswith("subject-code"):
-                    subjectCodes.append(request.form[key])
+                subject = request.form[subjectKey]
 
-            if not all([code, title, name, subjectCodes]):
+                if subject:
+                    # if subject is not empty, assign requirement value: True or False.
+                    requiredKey = f"required-{i}"
+                    isRequired = requiredKey in request.form
+
+                    subjectsAndRequirements[subject] = isRequired
+                
+                i += 1
+
+            if not all([code, title, name, subjectsAndRequirements]):
                 flash("Program code, title, and name cannot be empty.", "warning")
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return jsonify({"success": False, "error": "Program code, title, and name cannot be empty.", "errorType": "warning"}), 400
@@ -88,14 +101,14 @@ def add_program():
                 newProgram = Programs(code=code, title=title, name=name)
                 db.add(newProgram)
 
-            for subject in subjectCodes:
+            for subject, isRequired in subjectsAndRequirements.items():
                 if not db.query(Subjects).where(Subjects.code == subject).first():
                     return jsonify({"success": False, 
                                     "error": f"Subject: '{subject}' does not exist! Maybe add it first?",
                                     "errorType": "warning"
                                     }), 400
                 
-                newPS = ProgramSubjects(programCode=code, subjectCode=subject, required=required)
+                newPS = ProgramSubjects(programCode=code, subjectCode=subject, required=isRequired)
                 db.add(newPS)
             
             db.commit()
