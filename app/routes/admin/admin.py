@@ -4,7 +4,7 @@ from sqlalchemy import exc as mysql_errors
 from app.db import db
 from app.decorators import admin_required
 
-from app.models import Students, Programs, Subjects, ProgramSubjects
+from app.models import Students, Programs, Subjects, ProgramSubjects, StudentPrograms
 
 bp = Blueprint("admin", __name__, template_folder="templates", static_folder="static")
 
@@ -26,10 +26,11 @@ def home():
                            subjects=Subjects,
                            programs=Programs,
                            students=Students,
+                           studentprograms=StudentPrograms,
                            recent_students=recent_students,
                            all_subjects=all_subjects)
 
-@bp.route("/subject/add", methods=["GET", "POST"])
+@bp.route("/subjects/add", methods=["GET", "POST"])
 @admin_required
 def add_subject():
     if request.method == "POST":
@@ -60,7 +61,7 @@ def add_subject():
 
     return render_template("add_subject.html", model=Subjects)
 
-@bp.route("/program/add", methods=["GET", "POST"])
+@bp.route("/programs/add", methods=["GET", "POST"])
 @admin_required
 def add_program():
     if request.method == "POST":
@@ -134,3 +135,8 @@ def add_program():
             return redirect(url_for('admin.add_program'))
 
     return render_template("home.html")
+
+@bp.route("/students/add", methods=["GET", "POST"])
+def add_student():
+    all_students = db.query(Students).all()
+    return render_template("add_student.html", students=Students, studentprograms=StudentPrograms, all_students=all_students)

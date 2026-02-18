@@ -39,7 +39,7 @@ $("button#add-subject-btn").on("click", () => {
     // Find the select and label within the cloned element
     const select = clone.find("select");
     const labelSubject = clone.find("label[for^='subject-code']");
-    const labelRequired = clone.find("label[for^='required']")
+    const labelRequired = clone.find("label[for^='required']");
     const checkbox = clone.find("input[type='checkbox']");
 
     // Create a new unique ID. Counting existing subject entries is more robust

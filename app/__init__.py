@@ -31,13 +31,20 @@ def create_app():
 
     # have a humanize function for templates
     def humanize_label(value):
-        # handle camel cases: "firstName" -> "First Name"
+        # handle camel cases: "firstName" -> "first Name"
         value = re.sub(r"(?<!^)(?=[A-Z])", " ", value)
-
-        # handle snake_cases: "first_name" -> "First Name"
+        # handle snake_cases: "first_name" -> "first name"
         value = value.replace("_", " ")
 
-        return value.title()
+        # capitalize resulting str: "first Name" -> "First Name"
+        value = value.title()
+
+        # search for "id" that does not begin or trail with a letter, then replace with "ID"
+        # "Id" alone will be affected but not the "Id" from "Identification"
+        pattern = re.compile(r"\bid\b", re.IGNORECASE)
+        value = re.sub(pattern, "ID", value)
+
+        return value
     
     # add humanize_function into templates as humanize
     app.add_template_filter(humanize_label, "humanize")

@@ -40,3 +40,19 @@ $("#loginForm").on("submit", (event) => {
         }, 3000);
     })
 })
+
+$("#logout-btn").hover((event) => {
+    const $btn = $(event.target);
+    const icon = $btn.find("span.material-symbols-rounded");
+
+    icon.stop(true, true).fadeOut(150, function() {
+        $(this).text("directions_run").fadeIn(150);
+    });
+}, (event) => {
+    const $btn = $(event.target);
+    const icon = $btn.find("span.material-symbols-rounded");
+
+    icon.stop(true, true).fadeOut(150, function() {
+        $(this).text("door_open").fadeIn(150);
+    });
+});

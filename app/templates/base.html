@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=door_open,person" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=directions_run,door_open,person" />
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
     {% block styles %}{% endblock %}
 </head>
@@ -17,7 +17,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="flashes alert alert-{{ category }}" role="alert">{{ message }}</div>
+                <div class="flashes alert alert-{{ category }}" role="alert"><i class="fa-solid fa-building-circle-exclamation"></i>{{ message }}</div>
             {% endfor %}
             </ul>
         {% endif %}
@@ -32,8 +32,8 @@
                 
                 </div>
                 <a class="navbar-brand mx-auto" href="{{ url_for('main.index') }}" style="font-family: UnifrakturCook, sans-serif;"><h3>My School</h3></a>
-                <div class="collapse navbar-collapse flex-row-reverse" id="navbarSupportedContent">
-                    <a class="btn btn-danger btn-sm" href="{{ url_for('auth.logout') }}" role="button"><span class="material-symbols-rounded">door_open</span>Logout</a>
+                <div class="collapse navbar-collapse flex-row-reverse d-flex" id="navbarSupportedContent">
+                    <a class="btn btn-danger btn-sm" href="{{ url_for('auth.logout') }}" id="logout-btn" role="button"><span class="material-symbols-rounded">door_open</span>Logout</a>
                 </div>
             </div>
         </nav>
