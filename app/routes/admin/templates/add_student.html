@@ -5,28 +5,44 @@
 {% block body %}
     <div class="card card-shadow pt-5">
         <div class="card-header d-flex align-items-center">
-            <h5 class="card-title mx-auto"><i class="fa-solid fa-book-open-reader fa-lg"></i> New Student's Information</h5>
+            <h3 class="card-title mx-auto"><i class="fa-solid fa-book-open-reader fa-lg"></i> New Student's Information</h3>
         </div>
         <div class="card-body">
             <form action="{{ url_for('admin.add_student') }}" method="post" class="g-4 align-items-center">
-                {% for col in students.__table__.columns %}
-                    {% if col.name != "id" %}
-                        <div class="form-floating my-2 position-relative">
-                                <input type="text" 
-                                    id="{{ col.name }}" 
-                                    name="{{ col.name }}" 
-                                    class="form-control" 
-                                    placeholder="name123"
-                                    {% if not col.nullable %}required{% endif %}>
-                                <label for="{{ col.name }}">{{ col.name | humanize }}</label>
-                                {% if not col.nullable %}
-                                    <span id="{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
-                                        <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
-                                    </span>
-                                {% endif %}
-                            </div>
-                    {% endif %}
-                {% endfor %}
+                <div class="row g-2">
+                    <h5 class="card-subtitle py-1">
+                        Full Name
+                    </h5>
+                    <div class="col-md">
+                        <div class="form-floating position-relative">
+                            <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" required>
+                            <label for="firstName">First Name</label>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
+                                <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-floating position-relative">
+                            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" required>
+                            <label for="lastName">Last Name</label>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
+                                <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-floating position-relative">
+                            <input type="text" id="middleName" name="middleName" class="form-control" placeholder="Middle Name">
+                            <label for="middleName">Middle Name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-2">
+                    <h5 class="card-subtitle py-1">
+                        Enroll? <span class="text-muted fs-6">(Optional)</span>
+                    </h5>
+                </div>
                 <button type="submit" class="btn btn-primary mt-2 position-relative bottom-0 start-50 translate-middle-x">Register Student</button>
             </form>
         </div>
