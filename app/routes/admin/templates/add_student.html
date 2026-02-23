@@ -2,13 +2,15 @@
 
 {% block title %} | Add a Student{% endblock %}
 
+{% block styles %}<link rel="stylesheet" href="{{ url_for('admin.static', filename='styles.css') }}">{% endblock%}
+
 {% block body %}
-    <div class="card card-shadow pt-5">
-        <div class="card-header d-flex align-items-center">
+    <div class="card card-shadow mt-5">
+        <div class="card-header text-bg-dark d-flex align-items-center">
             <h3 class="card-title mx-auto"><i class="fa-solid fa-book-open-reader fa-lg"></i> New Student's Information</h3>
         </div>
         <div class="card-body">
-            <form action="{{ url_for('admin.add_student') }}" method="post" class="g-4 align-items-center">
+            <form action="{{ url_for('admin.add_student') }}" method="post" class="g-4 align-items-center" id="add-student">
                 <div class="row g-2">
                     <h5 class="card-subtitle py-1">
                         Full Name
@@ -38,13 +40,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-2">
-                    <h5 class="card-subtitle py-1">
-                        Enroll? <span class="text-muted fs-6">(Optional)</span>
-                    </h5>
+                <h5 class="card-subtitle py-3">
+                    Enroll? <span class="text-muted fs-6">(Optional)</span>
+                </h5>
+                <button type="button" id="add-enrollment-btn" class="btn btn-outline-secondary">Add A Program<i class="fa-solid fa-plus fa-fade"></i></button>
+                <div class="row py-2" id="enrollment-container">
                 </div>
                 <button type="submit" class="btn btn-primary mt-2 position-relative bottom-0 start-50 translate-middle-x">Register Student</button>
             </form>
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}<script src="{{ url_for('admin.static', filename='script.js') }}"></script>{% endblock %}

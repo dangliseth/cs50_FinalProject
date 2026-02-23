@@ -1,0 +1,7 @@
+button#delete-enroll-program {
+    color: red;
+}
+button#delete-enroll-program:hover {
+    background-color: red;
+    color: white;
+}

@@ -23,7 +23,9 @@
         {% endif %}
     {% endwith %}
     {% if current_user.is_authenticated %}
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+        <nav class="navbar navbar-expand-sm 
+                    {% if current_user.role != 'admin' %}{% else %}bg-dark navbar-dark{% endif %} 
+                    sticky-top">
             <div class="container-sm">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

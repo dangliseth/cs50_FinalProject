@@ -61,6 +61,33 @@ $("button#add-subject-btn").on("click", () => {
     container.append(clone);
 });
 
+$("form#add-student").on("click", "button#add-enrollment-btn", function() {
+    const container = $("#enrollment-container");
+    const btn = $(this);
+
+
+
+    const newElement = `<div class="col-md d-flex">
+                        <select class="form-select">
+                            <option value="" selected>Select a Program</option>
+                            {% for prog in programNames %}
+                                <option value="{{ prog }}">{{ prog }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" class="btn btn-sm ms-2" id="delete-enroll-program">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                    </div>`;
+    container.prepend(newElement);
+
+
+    if (container.children().length >= 2) {
+        btn.remove();
+    } else {
+        container.before(btn);
+    };
+});
+
 $("form#add-programForm").on("submit", (event) => {
     console.log("Form submission intercepted!"); // Debug log
     event.preventDefault();
@@ -94,9 +121,3 @@ $("form#add-programForm").on("submit", (event) => {
     });
 });
 
-// Use event delegation on the container to handle events for all select elements,
-// including ones that are added dynamically.
-$("#add-programForm").on("change", "select", (event) => {
-    // Find the placeholder option within the specific select that was changed and disable it.
-    $(event.target).find('option[value=""]').prop("disabled", true);
-});

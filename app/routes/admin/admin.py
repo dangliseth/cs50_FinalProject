@@ -137,6 +137,8 @@ def add_program():
     return render_template("home.html")
 
 @bp.route("/students/add", methods=["GET", "POST"])
+@admin_required
 def add_student():
-    all_students = db.query(Students).all()
-    return render_template("add_student.html", students=Students, studentprograms=StudentPrograms, all_students=all_students)
+    programNames = db.query(Programs.name).all()
+    programNames = [program[0] for program in programNames]  # Extract names from tuples
+    return render_template("add_student.html", studentprograms=StudentPrograms, programNames=programNames)

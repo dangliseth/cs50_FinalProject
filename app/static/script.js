@@ -56,3 +56,10 @@ $("#logout-btn").hover((event) => {
         $(this).text("door_open").fadeIn(150);
     });
 });
+
+// Use event delegation on the container to handle events for all select elements,
+// including ones that are added dynamically.
+$(document).on("change", "select", (event) => {
+    // Find the placeholder option within the specific select that was changed and disable it.
+    $(event.target).find('option[value=""]').prop("disabled", true);
+});
