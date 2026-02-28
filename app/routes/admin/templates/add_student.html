@@ -44,7 +44,7 @@
                     Enroll? <span class="text-muted fs-6">(Optional)</span>
                 </h5>
                 <button type="button" id="add-enrollment-btn" class="btn btn-outline-secondary">Add A Program<i class="fa-solid fa-plus fa-fade"></i></button>
-                <div class="row py-2" id="enrollment-container">
+                <div class="row py-2" id="enrollment-container" data-programs='{{ programNames | tojson }}'>
                 </div>
                 <button type="submit" class="btn btn-primary mt-2 position-relative bottom-0 start-50 translate-middle-x">Register Student</button>
             </form>
