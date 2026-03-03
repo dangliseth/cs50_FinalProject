@@ -1,7 +1,7 @@
 .flashes {
-    position: fixed;
+    position: sticky;
     left: 45vw;
-    z-index: 99;
+    z-index: 99999999999;
 }
 
 .alert {

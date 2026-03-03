@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}| Student Information{% endblock %}
+
+{% block body %}
+{% include "edit_student_modal.html" %}
+    <div class="card card-shadow my-5">
+        <div class="card-header d-flex justify-content-center py-3">
+            <h4 class="card-title mx-auto"><i class="fa-regular fa-address-card"></i> 
+                {{ student.firstName }} {% if student.middleName %}{{ student.middleName }}{% else %}{% endif %} {{ student.lastName }}
+            </h4>
+            <button type="button" data-bs-toggle="modal" class="btn btn-sm btn-primary mx-auto" data-bs-target="#edit-studentModal">
+                Edit Details <i class="fa-solid fa-pen"></i>
+            </button>
+        </div>
+        <div class="card-body bg-dark p-0">
+            <table class="table table-dark table-striped-columns table-bordered align-middle">
+                <tbody>
+                    {% for col in Students.__table__.columns %}
+                    <tr>
+                        <th class="py-3">{{ col.name | humanize }}</th>
+                        <td class="py-3">
+                            {% set val = student | attr(col.name) %}
+                            {% if val is none or val == "" %}
+                                <i>[None]</i>
+                            {% else %}
+                                {{ val }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="table-info">
+                        <th class="py-3">Enrolled In</th>
+                        <td class="py-3">
+                            {% if not programs %}
+                                <i>[Not Enrolled]</i>
+                            {% else %}
+                                {% for prog in programs %}
+                                    {{ prog.name }}
+                                    {% if not loop.last %}<br>{% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('admin.static', filename='script.js') }}"></script>
+{% endblock %}

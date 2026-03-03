@@ -18,6 +18,7 @@ def home():
     all_subjects = db.query(Subjects).all()
 
     recent_students = db.query(Students).order_by(Students.id.desc()).limit(10).all()
+    recent_enrolled_students = db.query(Students).join(StudentPrograms).filter(StudentPrograms.status == "Enrolled").order_by(Students.id.desc()).limit(10).all()
 
     return render_template("home.html", 
                            student_count=student_count, 
@@ -28,7 +29,16 @@ def home():
                            students=Students,
                            studentprograms=StudentPrograms,
                            recent_students=recent_students,
+                           recent_enrolled_students=recent_enrolled_students,
                            all_subjects=all_subjects)
+
+@bp.route("/student/<int:student_id>")
+@admin_required
+def view_student(student_id):
+    student = db.query(Students).filter(Students.id == student_id).first()
+    programs = db.query(Programs).join(StudentPrograms).filter(StudentPrograms.studentID == student_id).all()
+
+    return render_template("view_student.html", student=student, Students=Students, programs=programs)
 
 @bp.route("/subjects/add", methods=["GET", "POST"])
 @admin_required
@@ -45,6 +55,7 @@ def add_subject():
             db.commit()
 
             #js AJAX redirect
+            flash(f"Added {name} successfully!", "success")
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return jsonify({"success": True, "redirect_url": url_for("admin.home")})
             
@@ -139,6 +150,44 @@ def add_program():
 @bp.route("/students/add", methods=["GET", "POST"])
 @admin_required
 def add_student():
+    if request.method == "POST":
+        programs = request.form.getlist("programNames")
+        fname = str(request.form.get("firstName")).title()
+        lname = str(request.form.get("lastName")).title()
+        mname = str(request.form.get("middleName")).title()
+        try:
+            newStudent = Students(firstName=fname, lastName=lname, middleName=mname)
+            db.add(newStudent)
+
+            if programs:
+                for prog_name in programs:
+                    # 1. Find the Program object using the name from the form
+                    program = db.query(Programs).filter_by(name=prog_name).first()
+                    
+                    if program:
+                        # 2. Create the association object
+                        # We set 'status' because it is nullable=False in your model
+                        sp = StudentPrograms(status="Enrolled")
+                        
+                        # 3. Use the relationship! 
+                        # Instead of manually setting programCode, we assign the object.
+                        sp.programs = program
+                        
+                        # 4. Add to the student's list
+                        newStudent.student_programs.append(sp)
+            
+            db.commit()
+            flash(f"Added student {fname} {lname}", "success")
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify({"success": True, "redirect_url": url_for("admin.home")})
+            return redirect(url_for("admin.home"))
+        except mysql_errors.IntegrityError:
+            db.rollback()
+            flash("Database error! Duplicate Programs OR Student is already registered?", "danger")
+        except Exception as e:
+            db.rollback()
+            flash(f"Error adding student: {e}", "danger")
+
     programNames = db.query(Programs.name).all()
     programNames = [program[0] for program in programNames]  # Extract names from tuples
     return render_template("add_student.html", studentprograms=StudentPrograms, programNames=programNames)

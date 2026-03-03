@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} | Admin Home{% endblock %}
+{% block title %}| Admin Home{% endblock %}
 
 {% block styles %}
     <link rel="stylesheet" href="{{ url_for('admin.static', filename='styles.css') }}">
@@ -9,12 +9,12 @@
 {% block body %}
 {% include "add_program_modal.html" %}
 {% include "add_subject_modal.html" %}
-<div class="container-fluid py-4">
+<div class="container-fluid my-4">
     
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Admin Homepage</h2>
         <div>
-            <a href="{{ url_for('admin.add_student') }}" class="btn btn-primary">
+            <a href="{{ url_for('admin.add_student') }}" class="btn btn-dark">
                 <i class="fa-solid fa-square-plus"></i> New Student
             </a>
             <button type="button" data-bs-toggle="modal" class="btn btn-outline-dark" data-bs-target="#add-subjectModal">
@@ -52,15 +52,16 @@
                 <div class="card-body text-dark">
                     <h5 class="card-title">Total Subjects</h5>
                     <p class="display-4">{{ subject_count }}</p>
-                    <small>across all curriculums</small>
+                    <small>Across all curriculums</small>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card bg-dark">
-        <div class="card-header py-3">
-            <h5 class="mb-0 text-white">Recently Enrolled Students</h5>
+    <div class="card bg-dark my-5">
+        <div class="card-header d-flex flex-row py-3">
+            <h5 class="mb-0 text-white">Recently Registered Students</h5>
+            <a href="#" class="mb-0 card-link btn btn-outline-light ms-auto" role="button">View All Students →</a>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -84,18 +85,18 @@
                             </td>
                             <td>
                                 {% for sp in student.student_programs %}
-                                    {{ sp.programCode }}
+                                    {{ sp.programCode }}{% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             </td>
                             <td>
-                                {% if sp %}
-                                    <span class="badge bg-success">Active</span>
+                                {% if student.student_programs | selectattr("status", "equalto", "Enrolled") | list %}
+                                    <span class="badge bg-success">Enrolled</span>
                                 {% else %}
                                     <span class="badge bg-danger">Inactive</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-primary">View</a>
+                                <a href="{{ url_for('admin.view_student', student_id=student.id) }}" class="btn btn-sm btn-primary">View<i class="fa-regular fa-eye ms-1"></i></a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -103,8 +104,53 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer bg-dark">
-            <a href="#" class="card-link btn btn-outline-light" role="button">View All Students →</a>
+    </div>
+
+    <div class="card bg-dark">
+        <div class="card-header d-flex flex-row py-3">
+            <h5 class="mb-0 text-white">Recently Enrolled Students</h5>
+            <a href="#" class="mb-0 card-link btn btn-outline-light ms-auto" role="button">View All Students →</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-light mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Program</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in recent_enrolled_students %}
+                        <tr>
+                            <td>{{ student.id }}</td>
+                            <td>
+                                <strong>{{ student.lastName }}, {{ student.firstName }} 
+                                    {% if student.middleName != None %}{{ student.middleName }}{% endif %}</strong>
+                            </td>
+                            <td>
+                                {% for sp in student.student_programs %}
+                                    {{ sp.programCode }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if student.student_programs %}
+                                    <span class="badge bg-success">Enrolled</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('admin.view_student', student_id=student.id) }}" class="btn btn-sm btn-primary">View<i class="fa-regular fa-eye ms-1"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

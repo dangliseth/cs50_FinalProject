@@ -65,27 +65,72 @@ $("form#add-student").on("click", "button#add-enrollment-btn", function() {
     const container = $("#enrollment-container");
     const btn = $(this);
 
+    const programsData = container.attr("data-programs");
+    const programs = JSON.parse(programsData);
+    const optionsHTML = programs.map(prog =>
+        `<option value="${prog}">${prog}</option>`
+    ).join("");
 
 
     const newElement = `<div class="col-md d-flex">
-                        <select class="form-select">
+                        <select class="form-select" name="programNames">
                             <option value="" selected>Select a Program</option>
-                            {% for prog in programNames %}
-                                <option value="{{ prog }}">{{ prog }}</option>
-                            {% endfor %}
+                            ${optionsHTML}
                         </select>
                         <button type="button" class="btn btn-sm ms-2" id="delete-enroll-program">
                             <i class="fa-solid fa-minus"></i>
                         </button>
                     </div>`;
-    container.prepend(newElement);
+    container.append(newElement);
 
 
     if (container.children().length >= 2) {
         btn.remove();
-    } else {
-        container.before(btn);
     };
+});
+
+$("form#add-student").on("click", "button#delete-enroll-program", function() {
+    const btn = $(this);
+    const parent = btn.parent();
+    parent.remove();
+
+    const container = $("#enrollment-container");
+    if (container.children().length < 2 && !$("#add-enrollment-btn").length) {
+        const addBtn = `<button type="button" id="add-enrollment-btn" class="btn btn-outline-secondary">
+                        Add A Program<i class="fa-solid fa-plus fa-fade"></i>
+                        </button>`;
+        container.before(addBtn);
+    };
+});
+
+$("form#add-student").on("submit", function(event) {
+    event.preventDefault();
+    
+    const $form = $(this);
+    const url = $form.attr("action");
+    const formData = $form.serialize();
+
+    $.post(url, formData).done((response) => {
+        if (response.success) {
+            window.location.href = response.redirect_url;
+        }
+    }).fail((xhr) => {
+        const message = xhr.responseJSON.error || "An error occurred while adding the student.";
+        const errorType = xhr.responseJSON.errorType || "error";
+
+        const body = $("div.card-body");
+
+        body.prepend(
+            `<div id="error" class="alert alert-${errorType} shadow" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                ${message}
+            </div>`
+        );
+
+        setTimeout(() => {
+            $("div#error").fadeOut("slow")
+        }, 3000);
+    });
 });
 
 $("form#add-programForm").on("submit", (event) => {
@@ -120,4 +165,3 @@ $("form#add-programForm").on("submit", (event) => {
         }, 3000);
     });
 });
-

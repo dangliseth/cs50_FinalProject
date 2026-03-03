@@ -1,0 +1,33 @@
+<div class="modal fade" id="edit-studentModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="edit-studentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content px-3 py-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit</h5>
+                <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('admin.add_program') }}" method="post" id="edit-StudentForm">
+                    {% for col in Students.__table__.columns %}
+                        {% if not col.name.lower().startswith("id") and not col.name.lower().endswith("id") %}
+                            <div class="form-floating my-2 position-relative">
+                                    <input type="text" 
+                                        id="{{ col.name }}" 
+                                        name="{{ col.name }}" 
+                                        class="form-control" 
+                                        placeholder="name123"
+                                        {% if not col.nullable %}required{% endif %}>
+                                    <label for="{{ col.name }}">{{ col.name | humanize }}</label>
+                                    {% if not col.nullable %}
+                                        <span id="{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3">
+                                            <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
+                                        </span>
+                                    {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary mt-2 position-relative bottom-0 start-50 translate-middle-x">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
