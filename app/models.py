@@ -85,7 +85,8 @@ class Students(Base):
     __table_args__ = (
         ForeignKeyConstraint(['user_id'], ['users.id'], name='users_studentsFK'),
         Index('id_UNIQUE', 'id', unique=True),
-        Index('users_studentsFK_idx', 'user_id')
+        Index('users_studentsFK_idx', 'user_id'),
+        Index('firstName_lastNameUnique', 'firstName', 'lastName', unique=True)
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

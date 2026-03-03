@@ -18,6 +18,7 @@ def home():
     all_subjects = db.query(Subjects).all()
 
     recent_students = db.query(Students).order_by(Students.id.desc()).limit(10).all()
+    recent_enrolled_students = db.query(Students).join(StudentPrograms).filter(StudentPrograms.status == "Enrolled").order_by(Students.id.desc()).limit(10).all()
 
     return render_template("home.html", 
                            student_count=student_count, 
@@ -28,7 +29,16 @@ def home():
                            students=Students,
                            studentprograms=StudentPrograms,
                            recent_students=recent_students,
+                           recent_enrolled_students=recent_enrolled_students,
                            all_subjects=all_subjects)
+
+@bp.route("/student/<int:student_id>")
+@admin_required
+def view_student(student_id):
+    student = db.query(Students).filter(Students.id == student_id).first()
+    programs = db.query(Programs).join(StudentPrograms).filter(StudentPrograms.studentID == student_id).all()
+
+    return render_template("view_student.html", student=student, Students=Students, programs=programs)
 
 @bp.route("/subjects/add", methods=["GET", "POST"])
 @admin_required
