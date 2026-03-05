@@ -1,10 +1,11 @@
-.flashes {
-    position: sticky;
-    left: 45vw;
+#flash.flashes {
+    position: fixed;
+    left: 40vw;
+    top: 5vh;
     z-index: 99999999999;
 }
 
-.alert {
+#error.alert {
     position: fixed;
     top: 3vh;
     left: 50%;

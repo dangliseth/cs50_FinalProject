@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import redirect, url_for, flash
+from flask import redirect, url_for, flash, request
 from flask_login import current_user
 
 def admin_required(f):
@@ -14,7 +14,7 @@ def admin_required(f):
         # check for admin role
         if current_user.role != "admin":
             flash("You are not allowed there.", "danger")
-            return redirect("/")
+            return redirect(request.referrer or "/")
         
         return f(*args, **kwargs)
     

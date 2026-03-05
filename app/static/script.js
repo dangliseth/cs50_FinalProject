@@ -39,7 +39,11 @@ $("#loginForm").on("submit", (event) => {
             $("div#error").fadeOut("slow")
         }, 3000);
     })
-})
+});
+
+$("#loginModal").on("shown.bs.modal", function() {
+    $("#username").focus();
+});
 
 $("#logout-btn").hover((event) => {
     const $btn = $(event.target);

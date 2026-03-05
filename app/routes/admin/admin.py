@@ -40,6 +40,37 @@ def view_student(student_id):
 
     return render_template("view_student.html", student=student, Students=Students, programs=programs)
 
+@bp.route("/student/<int:student_id>/edit", methods=["POST"])
+@admin_required
+def edit_student(student_id):
+    student = db.query(Students).get(student_id)
+
+    if student:
+        # Whitelist allowed fields for security
+        allowed_fields = ["firstName", "lastName", "middleName"]
+
+        try:
+            updated = False
+            for key, value in request.form.items():
+                if key in allowed_fields and value:
+                    setattr(student, key, value)
+                    updated = True
+            
+            if not updated:
+                raise ValueError("No valid input provided")
+            
+            db.commit()
+            flash("Student updated successfully.", "success")
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify({"success": True, "redirect_url": request.referrer or url_for("admin.view_student", student_id=student_id)})
+        except:
+            db.rollback()
+            flash(f"Error updating student {student.id}.", "danger")
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify({"success": False, "error": "Database Error. Student was not updated!"}), 400
+
+    return redirect(url_for("admin.view_student", student_id=student_id))
+
 @bp.route("/subjects/add", methods=["GET", "POST"])
 @admin_required
 def add_subject():

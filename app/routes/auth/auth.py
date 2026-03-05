@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, flash, url_for, jsonify
+from urllib.parse import urlparse
 
 from flask_login import login_user, logout_user, login_required, current_user
 from app.db import db
@@ -21,12 +22,16 @@ def login():
         if user and user.check_password(password):
             login_user(user)
 
+            next_page = request.args.get("next")
+            if not next_page or urlparse(next_page).netloc != "":
+                next_page = url_for("main.index")
+
             # AJAX handling the login
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return jsonify({"success": True, "redirect_url": url_for("main.index")})
+                return jsonify({"success": True, "redirect_url": next_page})
 
             # normal flask without AJAX
-            return redirect(url_for("main.index"))
+            return redirect(next_page)
 
         # Failed Login. AJAX error handling
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":

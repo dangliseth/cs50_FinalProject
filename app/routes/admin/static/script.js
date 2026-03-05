@@ -165,3 +165,53 @@ $("form#add-programForm").on("submit", (event) => {
         }, 3000);
     });
 });
+
+$("form#edit-studentForm").on("click", "button#edit-btn", function() {
+    const button = $(this);
+    const input = button.parent().find("input");
+
+    if (input.prop("disabled")){
+        input.prop("disabled", false);
+        const icon = button.find("i");
+        icon.removeClass("fa-regular fa-pen-to-square").addClass("fa-solid fa-arrow-rotate-left");
+        button.removeClass("btn-outline-primary").addClass("btn-warning");
+        button.empty().append(icon).append("Undo");
+    } else {
+        input.prop("disabled", true);
+        const icon = button.find("i");
+        icon.removeClass("fa-solid fa-arrow-rotate-left").addClass("fa-regular fa-pen-to-square");
+        button.removeClass("btn-warning").addClass("btn-outline-primary");
+        button.empty().append(icon).append("Edit");
+        input.val(input.attr("value")); // Reset to original value
+    };
+});
+
+$("form#edit-studentForm").on("submit", function(event) {
+    event.preventDefault();
+    
+    const $form = $(this);
+    const url = $form.attr("action");
+    const formData = $form.serialize();
+
+    $.post(url, formData).done((response) => {
+        if (response.success) {
+            window.location.href = response.redirect_url;
+        }
+    }).fail((xhr) => {
+        const message = xhr.responseJSON.error || "Database Error.";
+        const errorType = xhr.responseJSON.errorType || "danger";
+
+        const modal = $("#edit-studentBody");
+        
+        modal.prepend(
+            `<div id="error" class="alert alert-${errorType} shadow mt-5" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                ${message}
+            </div>`
+        );
+
+        setTimeout(() => {
+            $("div#error").fadeOut("slow")
+        }, 3000);
+    });
+});
