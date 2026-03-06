@@ -1,0 +1,40 @@
+<div class="modal fade" id="drop-subjectsModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="drop-subjectsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content px-3 py-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Drop Programs of {{ student.firstName }} {{ student.lastName }}</h5>
+                <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="drop-subjectsBody">
+                <form action="{{ url_for('admin.drop_subjects', student_id=student.id) }}" method="post" id="drop-subjectsForm">
+                    <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="exampleModalToggleLabel">Are you sure?</h1>
+                                </div>
+                                <div class="modal-body">
+                                    Show a second modal and hide this one with the button below.
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-target="#drop-subjectsModal" data-bs-toggle="modal">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% for prog in all_programs %}
+                        {% if prog in programs %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="programs" value="{{ prog.code }}" id="program-{{ loop.index }}">
+                                <label class="form-check-label" for="program-{{ loop.index }}">{{ prog.name }}</label>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <button type="submit" class="btn btn-danger mt-2 position-relative start-50 translate-middle-x">Drop</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

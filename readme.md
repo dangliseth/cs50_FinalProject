@@ -53,7 +53,7 @@ The application provides a comprehensive interface for managing academic data:
 The project follows a standard Flask application structure:
 
 ```
-c:\Users\setho\Documents\code\cs50_FinalProject\
+c:\Users\user\Documents\code\cs50_FinalProject\
 ├───.gitignore
 ├───GEMINI.md
 ├───requirements.txt

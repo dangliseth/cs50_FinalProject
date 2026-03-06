@@ -215,3 +215,33 @@ $("form#edit-studentForm").on("submit", function(event) {
         }, 3000);
     });
 });
+
+$("form#enroll-Form").on("submit", function(event) {
+    event.preventDefault();
+
+    const $form = $(this);
+    const url = $form.attr("action");
+    const formData = $form.serialize();
+
+    $.post(url, formData).done((response) => {
+        if (response.success) {
+            window.location.href = response.redirect_url;
+        }
+    }).fail((xhr) => {
+        const message = xhr.responseJSON.error || "Database Error.";
+        const errorType = xhr.responseJSON.errorType || "danger";
+
+        const modal = $("#enroll-Body");
+        
+        modal.prepend(
+            `<div id="error" class="alert alert-${errorType} shadow mt-5" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                ${message}
+            </div>`
+        );
+
+        setTimeout(() => {
+            $("div#error").fadeOut("slow")
+        }, 3000);
+    });
+});
