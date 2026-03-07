@@ -36,11 +36,15 @@ def home():
 @admin_required
 def view_student(student_id):
     student = db.query(Students).filter(Students.id == student_id).first()
-    programs = db.query(Programs).join(StudentPrograms).filter(StudentPrograms.studentID == student_id).all()
+    
+    # Query Programs AND the status column, then manually attach status to the Program objects
+    results = db.query(Programs, StudentPrograms.status).join(StudentPrograms).filter(StudentPrograms.studentID == student_id).all()
+    programs = []
+    for prog, status in results:
+        prog.status = status
+        programs.append(prog)
 
-    all_programs = db.query(Programs).all()
-
-    return render_template("view_student.html", student=student, Students=Students, programs=programs, all_programs=all_programs)
+    return render_template("view_student.html", student=student, Students=Students, programs=programs)
 
 # AJAX - Modal Function
 @bp.route("/student/<int:student_id>/edit", methods=["POST"])
@@ -88,10 +92,14 @@ def enroll_student(student_id):
     program = request.form.get("enroll-program")
     
     try:
-        enrollment = StudentPrograms(studentID=student_id, programCode=program, status="Enrolled")
-        # db.merge() will INSERT if the primary key doesn't exist,
-        # or UPDATE the existing record if it does.
-        db.merge(enrollment)
+        existing_record = db.query(StudentPrograms).filter_by(studentID=student_id, programCode=program).first()
+        if existing_record:
+            existing_record.status = "Enrolled"
+        else:
+            enrollment = StudentPrograms(studentID=student_id, programCode=program, status="Enrolled")
+            # db.merge() will INSERT if the primary key doesn't exist,
+            # or UPDATE the existing record if it does.
+            db.add(enrollment)
         db.commit()
         flash("Student enrolled successfully.", "success")
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -112,9 +120,17 @@ def drop_subjects(student_id):
     try:
         if programs:
             for prog in programs:
-                drop = StudentPrograms(studentID=student_id, programCode=prog, status="Dropped")
-                db.merge(drop)
-                db.commit()
+                # 1. Find the existing record using the unique combination
+                existing_record = db.query(StudentPrograms).filter_by(studentID=student_id, programCode=prog).first()
+                
+                if existing_record:
+                    # 2. Update the status on the existing object
+                    existing_record.status = "Dropped"
+                else:
+                    # 3. Fallback: If for some reason it doesn't exist, create it
+                    new_drop = StudentPrograms(studentID=student_id, programCode=prog, status="Dropped")
+                    db.add(new_drop)
+            db.commit()
             
         flash(f"Dropped Subjects {programs}", "success")
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":

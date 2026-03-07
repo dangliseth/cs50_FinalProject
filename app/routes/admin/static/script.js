@@ -1,35 +1,3 @@
-$("form#add-subjectForm").on("submit", (event) => {
-    console.log("Form submission intercepted!"); // Debug log
-    event.preventDefault();
-
-    const $form = $(event.target);
-    const url = $form.attr("action");
-    const formData = $form.serialize();
-
-    $.post(url, formData).done((response) => {
-        if (response.success) {
-            window.location.href = response.redirect_url;
-        }
-    }).fail((xhr) => {
-        console.log("AJAX request failed", xhr); // Debug log
-
-        const message = xhr.responseJSON.error || "An error occurred while adding the subject.";
-
-        const modal = $("#add-subjectBody");
-        
-        modal.prepend(
-            `<div id="error" class="alert alert-danger shadow" role="alert">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                ${message}
-            </div>`
-        );
-
-        setTimeout(() => {
-            $("div#error").fadeOut("slow")
-        }, 3000);
-    });
-});
-
 $("button#add-subject-btn").on("click", () => {
     const container = $("#subject-container");
     // Find the first subject entry to use as a template
@@ -103,69 +71,6 @@ $("form#add-student").on("click", "button#delete-enroll-program", function() {
     };
 });
 
-$("form#add-student").on("submit", function(event) {
-    event.preventDefault();
-    
-    const $form = $(this);
-    const url = $form.attr("action");
-    const formData = $form.serialize();
-
-    $.post(url, formData).done((response) => {
-        if (response.success) {
-            window.location.href = response.redirect_url;
-        }
-    }).fail((xhr) => {
-        const message = xhr.responseJSON.error || "An error occurred while adding the student.";
-        const errorType = xhr.responseJSON.errorType || "error";
-
-        const body = $("div.card-body");
-
-        body.prepend(
-            `<div id="error" class="alert alert-${errorType} shadow" role="alert">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                ${message}
-            </div>`
-        );
-
-        setTimeout(() => {
-            $("div#error").fadeOut("slow")
-        }, 3000);
-    });
-});
-
-$("form#add-programForm").on("submit", (event) => {
-    console.log("Form submission intercepted!"); // Debug log
-    event.preventDefault();
-
-    const $form = $(event.target);
-    const url = $form.attr("action");
-    const formData = $form.serialize();
-
-    $.post(url, formData).done((response) => {
-        if (response.success) {
-            window.location.href = response.redirect_url;
-        }
-    }).fail((xhr) => {
-        console.log("AJAX request failed", xhr); // Debug log
-
-        const message = xhr.responseJSON.error || "An error occurred while adding the subject.";
-        const errorType = xhr.responseJSON.errorType || "error";
-
-        const modal = $("#add-programBody");
-        
-        modal.prepend(
-            `<div id="error" class="alert alert-${errorType} shadow" role="alert">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                ${message}
-            </div>`
-        );
-
-        setTimeout(() => {
-            $("div#error").fadeOut("slow")
-        }, 3000);
-    });
-});
-
 $("form#edit-studentForm").on("click", "button#edit-btn", function() {
     const button = $(this);
     const input = button.parent().find("input");
@@ -186,9 +91,10 @@ $("form#edit-studentForm").on("click", "button#edit-btn", function() {
     };
 });
 
-$("form#edit-studentForm").on("submit", function(event) {
+
+$("form").on("submit", function(event) {
     event.preventDefault();
-    
+
     const $form = $(this);
     const url = $form.attr("action");
     const formData = $form.serialize();
@@ -201,7 +107,7 @@ $("form#edit-studentForm").on("submit", function(event) {
         const message = xhr.responseJSON.error || "Database Error.";
         const errorType = xhr.responseJSON.errorType || "danger";
 
-        const modal = $("#edit-studentBody");
+        const modal = $(".modal-body");
         
         modal.prepend(
             `<div id="error" class="alert alert-${errorType} shadow mt-5" role="alert">
@@ -216,32 +122,36 @@ $("form#edit-studentForm").on("submit", function(event) {
     });
 });
 
-$("form#enroll-Form").on("submit", function(event) {
-    event.preventDefault();
+$("#btn-confirm-drop").on("click", function() {
+    const form = $("form#drop-subjectsForm");
+    const checked = form.find("input[name='programs']:checked");
 
-    const $form = $(this);
-    const url = $form.attr("action");
-    const formData = $form.serialize();
-
-    $.post(url, formData).done((response) => {
-        if (response.success) {
-            window.location.href = response.redirect_url;
-        }
-    }).fail((xhr) => {
-        const message = xhr.responseJSON.error || "Database Error.";
-        const errorType = xhr.responseJSON.errorType || "danger";
-
-        const modal = $("#enroll-Body");
+    if (checked.length === 0) {
+        Swal.fire({
+            icon: "warning",
+            title: "No Selection",
+            text: "Please select at least one program to drop."
+        });
+    } else {
+        let listHtml = '<ul class="list-group list-group-flush text-start">';
+        checked.each(function() {
+            const labelText = form.find(`label[for='${this.id}']`).text();
+            listHtml += `<li class="list-group-item px-0">${labelText}</li>`;
+        });
+        listHtml += '</ul>';
         
-        modal.prepend(
-            `<div id="error" class="alert alert-${errorType} shadow mt-5" role="alert">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                ${message}
-            </div>`
-        );
-
-        setTimeout(() => {
-            $("div#error").fadeOut("slow")
-        }, 3000);
-    });
+        Swal.fire({
+            title: "Are you sure?",
+            html: `<p>You are about to drop the following programs:</p>${listHtml}`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#dc3545",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, drop them!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
 });
