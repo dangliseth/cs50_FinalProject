@@ -81,11 +81,13 @@
                             <td>{{ student.id }}</td>
                             <td>
                                 <strong>{{ student.lastName }}, {{ student.firstName }} 
-                                    {% if student.middleName != None %}{{ student.middleName }}{% endif %}</strong>
+                                    {% if student.middleName %}{{ student.middleName[0] }}.{% endif %}</strong>
                             </td>
                             <td>
                                 {% for sp in student.student_programs %}
-                                    {{ sp.programCode }}{% if not loop.last %}, {% endif %}
+                                    {% if sp.status == "Enrolled" %}
+                                        {{ sp.programCode }}{% if not loop.last %}, {% endif %}
+                                    {% endif %}
                                 {% endfor %}
                             </td>
                             <td>
@@ -133,7 +135,9 @@
                             </td>
                             <td>
                                 {% for sp in student.student_programs %}
-                                    {{ sp.programCode }}{% if not loop.last %}, {% endif %}
+                                    {% if sp.status == "Enrolled" %}
+                                        {{ sp.programCode }}{% if not loop.last %}, {% endif %}
+                                    {% endif%}
                                 {% endfor %}
                             </td>
                             <td>

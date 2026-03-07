@@ -36,10 +36,17 @@ def home():
 @admin_required
 def view_student(student_id):
     student = db.query(Students).filter(Students.id == student_id).first()
-    programs = db.query(Programs).join(StudentPrograms).filter(StudentPrograms.studentID == student_id).all()
+    
+    # Query Programs AND the status column, then manually attach status to the Program objects
+    results = db.query(Programs, StudentPrograms.status).join(StudentPrograms).filter(StudentPrograms.studentID == student_id).all()
+    programs = []
+    for prog, status in results:
+        prog.status = status
+        programs.append(prog)
 
     return render_template("view_student.html", student=student, Students=Students, programs=programs)
 
+# AJAX - Modal Function
 @bp.route("/student/<int:student_id>/edit", methods=["POST"])
 @admin_required
 def edit_student(student_id):
@@ -52,8 +59,10 @@ def edit_student(student_id):
         try:
             updated = False
             for key, value in request.form.items():
-                if key in allowed_fields and value:
-                    setattr(student, key, value)
+                if key in allowed_fields:
+                    # Convert empty strings to None (NULL in MySQL), otherwise use the value
+                    val = value if value else None
+                    setattr(student, key, val)
                     updated = True
             
             if not updated:
@@ -63,6 +72,11 @@ def edit_student(student_id):
             flash("Student updated successfully.", "success")
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return jsonify({"success": True, "redirect_url": request.referrer or url_for("admin.view_student", student_id=student_id)})
+        except ValueError as e:
+            db.rollback()
+            flash(f"{e}.", "danger")
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return jsonify({"success": False, "error": f"Database Error. {e}"}), 400
         except:
             db.rollback()
             flash(f"Error updating student {student.id}.", "danger")
@@ -71,6 +85,64 @@ def edit_student(student_id):
 
     return redirect(url_for("admin.view_student", student_id=student_id))
 
+# AJAX - Modal Function
+@bp.route("/student/<int:student_id>/enroll", methods=["POST"])
+@admin_required
+def enroll_student(student_id):
+    program = request.form.get("enroll-program")
+    
+    try:
+        existing_record = db.query(StudentPrograms).filter_by(studentID=student_id, programCode=program).first()
+        if existing_record:
+            existing_record.status = "Enrolled"
+        else:
+            enrollment = StudentPrograms(studentID=student_id, programCode=program, status="Enrolled")
+            # db.merge() will INSERT if the primary key doesn't exist,
+            # or UPDATE the existing record if it does.
+            db.add(enrollment)
+        db.commit()
+        flash("Student enrolled successfully.", "success")
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"success": True, "redirect_url": request.referrer or url_for("admin.view_student", student_id=student_id)})
+    except Exception as e:
+        db.rollback()
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"success": False, "error": str(e)}), 400
+
+    return redirect(url_for("admin.view_student", student_id=student_id))
+
+# AJAX - Modal Function
+@bp.route("/student/<int:student_id>/drop-subjects", methods=["POST"])
+@admin_required
+def drop_subjects(student_id):
+    programs = request.form.getlist("programs")
+
+    try:
+        if programs:
+            for prog in programs:
+                # 1. Find the existing record using the unique combination
+                existing_record = db.query(StudentPrograms).filter_by(studentID=student_id, programCode=prog).first()
+                
+                if existing_record:
+                    # 2. Update the status on the existing object
+                    existing_record.status = "Dropped"
+                else:
+                    # 3. Fallback: If for some reason it doesn't exist, create it
+                    new_drop = StudentPrograms(studentID=student_id, programCode=prog, status="Dropped")
+                    db.add(new_drop)
+            db.commit()
+            
+        flash(f"Dropped Subjects {programs}", "success")
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"success": True, "redirect_url": request.referrer or url_for("admin.view_student", student_id=student_id)})
+    except Exception as e:
+        db.rollback()
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"success": False, "error": str(e)}), 400
+    
+    return redirect(url_for("admin.view_student", student_id=student_id))
+
+# AJAX - Modal Function
 @bp.route("/subjects/add", methods=["GET", "POST"])
 @admin_required
 def add_subject():
@@ -103,6 +175,7 @@ def add_subject():
 
     return render_template("add_subject.html", model=Subjects)
 
+# AJAX - Modal Function
 @bp.route("/programs/add", methods=["GET", "POST"])
 @admin_required
 def add_program():
@@ -133,7 +206,6 @@ def add_program():
                 i += 1
 
             if not all([code, title, name, subjectsAndRequirements]):
-                flash("Program code, title, and name cannot be empty.", "warning")
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return jsonify({"success": False, "error": "Program code, title, and name cannot be empty.", "errorType": "warning"}), 400
                 return redirect(url_for('admin.home'))
@@ -143,6 +215,8 @@ def add_program():
             if not program:
                 newProgram = Programs(code=code, title=title, name=name)
                 db.add(newProgram)
+            # If program exists, we might want to update it? If so, use db.merge(newProgram) instead.
+            # For now, we leave the program details alone if it exists.
 
             for subject, isRequired in subjectsAndRequirements.items():
                 if not db.query(Subjects).where(Subjects.code == subject).first():
@@ -152,7 +226,9 @@ def add_program():
                                     }), 400
                 
                 newPS = ProgramSubjects(programCode=code, subjectCode=subject, required=isRequired)
-                db.add(newPS)
+                # Use merge here! If the subject is already assigned to the program,
+                # this will simply update the 'required' status instead of crashing with a Duplicate Entry error.
+                db.merge(newPS)
             
             db.commit()
 
@@ -164,14 +240,12 @@ def add_program():
         except mysql_errors.IntegrityError:
             db.rollback()
             error_msg = "Database error: A program with this code might already exist, or a duplicate subject."
-            flash(error_msg, "danger")
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return jsonify({"success": False, "error": error_msg, "errorType": "danger"}), 400
             return redirect(url_for('admin.add_program'))
         except Exception as e:
             db.rollback()
             error_msg = f"An unexpected error occurred: {e}"
-            flash(error_msg, "danger")
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return jsonify({"success": False, "error": str(e), "errorType": "danger"}), 500
             return redirect(url_for('admin.add_program'))

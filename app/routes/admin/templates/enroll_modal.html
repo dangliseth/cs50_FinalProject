@@ -1,0 +1,23 @@
+<div class="modal fade" id="enroll-modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="enroll-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content px-3 py-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Enroll Student {{ student.firstName }} {{ student.lastName }}</h5>
+                <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="enroll-Body">
+                <form action="{{ url_for('admin.enroll_student', student_id=student.id) }}" method="post" id="enroll-Form">
+                    <select class="form-select" name="enroll-program" id="enroll-program">
+                        <option selected disabled value="">Select a Program to Enroll in</option>
+                        {% for prog in all_programs %}
+                            {% if prog not in programs %}
+                                <option value="{{ prog.code }}">{{ prog.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary mt-2 position-relative start-50 translate-middle-x">Enroll</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

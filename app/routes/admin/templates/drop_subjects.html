@@ -1,0 +1,25 @@
+<div class="modal fade" id="drop-subjectsModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="drop-subjectsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content px-3 py-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Drop Programs of {{ student.firstName }} {{ student.lastName }}</h5>
+                <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="drop-subjectsBody">
+                <form action="{{ url_for('admin.drop_subjects', student_id=student.id) }}" method="post" id="drop-subjectsForm">
+                    {% for prog in programs %}
+                        {% if prog.status == "Enrolled" %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="programs" value="{{ prog.code }}" id="program-{{ loop.index }}">
+                                <label class="form-check-label" for="program-{{ loop.index }}">{{ prog.name }}</label>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <button type="button" id="btn-confirm-drop" class="btn btn-danger mt-2 position-relative start-50 translate-middle-x">
+                        Drop
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

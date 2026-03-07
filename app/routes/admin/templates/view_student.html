@@ -4,6 +4,9 @@
 
 {% block body %}
 {% include "edit_student_modal.html" %}
+{% include "enroll_modal.html" %}
+{% include "drop_subjects.html" %}
+
     <div class="card card-shadow my-5">
         <div class="card-header d-flex justify-content-center py-3">
             <h4 class="card-title mx-auto"><i class="fa-regular fa-address-card"></i> 
@@ -32,13 +35,27 @@
                     <tr class="table-info">
                         <th class="py-3">Enrolled In</th>
                         <td class="py-3">
-                            {% if not programs %}
+                            {% if not programs | selectattr("status", "equalto", "Enrolled") | list %}
                                 <i>[Not Enrolled]</i>
                             {% else %}
                                 {% for prog in programs %}
-                                    {{ prog.name }}
-                                    {% if not loop.last %}<br>{% endif %}
+                                    {% if prog.status == "Enrolled" %}
+                                        {{ prog.name }}
+                                        {% if not loop.last %}<br>{% endif %}
+                                    {% endif %}
                                 {% endfor %}
+                            {% endif %}
+                            {% if programs | length < 2 %}
+                                <button type="button" data-bs-toggle="modal" class="btn btn-sm btn-primary ms-2" data-bs-target="#enroll-modal">
+                                    <i class="fa-solid fa-chalkboard-user"></i> Enroll
+                                </button>
+                            {% endif %}
+                            {% if programs | selectattr("status", "equalto", "Enrolled") | list %}
+                                <br>
+                                <button type="button" data-bs-toggle="modal" 
+                                        class="btn btn-sm btn-outline-danger ms-5 mt-2" data-bs-target="#drop-subjectsModal">
+                                    <i class="fa-solid fa-file-circle-minus"></i> Drop Program/s
+                                </button>
                             {% endif %}
                         </td>
                     </tr>
@@ -49,5 +66,6 @@
 {% endblock %}
 
 {% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ url_for('admin.static', filename='script.js') }}"></script>
 {% endblock %}
