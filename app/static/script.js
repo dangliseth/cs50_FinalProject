@@ -27,14 +27,21 @@ $("a#logout-btn").hover(function() {
 });
 
 $("nav div[class$='-dropdown']").hover(function() {
-    $(this).addClass("position-relative");
-    const items = $(this).find("div[class^='dropdown']");
+    const items = $(this).find("div[class*='dropdown']");
 
-    items.removeClass("d-none").addClass("d-grid");
+    clearTimeout($(this).data("timer"));
+
+    items.stop(true, true).removeClass("d-none").addClass("d-grid").fadeIn(150);
 }, function() {
-    const items = $(this).find("div[class^='dropdown']");
+    const items = $(this).find("div[class*='dropdown']");
 
-    items.addClass("d-none").removeClass("d-grid");
+    const timer = setTimeout(function() {
+        items.stop(true, true).fadeOut(150, function() {
+            $(this).addClass("d-none").removeClass("d-grid").fadeIn(150);
+        });
+    }, 200);
+
+    $(this).data("timer", timer);
 });
 
 // handle login modal.
@@ -81,4 +88,11 @@ $("#loginModal").on("shown.bs.modal", function() {
 $(document).on("change", "select", (event) => {
     // Find the placeholder option within the specific select that was changed and disable it.
     $(event.target).find('option[value=""]').prop("disabled", true);
+});
+
+$(function() {
+    const elements = "button, a, div[class*='table'], table, tr, th, td"
+
+    $("body *").not(elements).addClass("pe-none");
+    $(elements).addClass("pe-auto");
 });

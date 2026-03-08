@@ -32,24 +32,17 @@
                 </button>
                 <div class="collapse navbar-collapse flex-row-reverse" id="navbarSupportedContent">
                     <div class="d-block students-dropdown">
-                        <a class="btn btn-dark" href="#" id="students-btn" role="button">Students<i class="fa-solid fa-sort-down fa-bounce"></i></a>
-                        <div class="dropdown text-bg-dark d-none p-2 position-absolute">
-                            <a class="btn btn-dark" href="#" role="button">Action</a>
-                            <a class="btn btn-dark" href="#" role="button">Another action</a>
-                            <a class="btn btn-dark" href="#" role="button">Something else here</a>
+                        <a class="btn btn-dark" href="#" id="students-nav-btn" role="button">Students<i class="fa-solid fa-sort-down fa-bounce"></i></a>
+                        <div class="dropdown text-bg-dark d-none p-2 position-absolute rounded-4">
+                            <a class="btn btn-dark" href="#" role="button">Enrolled</a>
+                            <a class="btn btn-dark" href="#" role="button">Dropped</a>
                         </div>
                     </div>
                 </div>
                 <a class="navbar-brand mx-5" href="{{ url_for('main.index') }}" style="font-family: UnifrakturCook, sans-serif;"><h3>My School</h3></a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <div class="d-block subjects-dropdown">
-                        <a class="btn btn-dark" href="#" id="students-btn" role="button">Subjects<i class="fa-solid fa-sort-down fa-bounce"></i></a>
-                        <div class="dropdown text-bg-dark d-none p-2 position-absolute">
-                            <a class="btn btn-dark" href="#" role="button">Action</a>
-                            <a class="btn btn-dark" href="#" role="button">Another action</a>
-                            <a class="btn btn-dark" href="#" role="button">Something else here</a>
-                        </div>
-                    </div>
+                    <a class="btn btn-dark" href="#" id="subjects-nav-btn" role="button">Subjects</a>
+                    <a class="btn btn-dark" href="#" id="programs-nav-btn" role="button">Programs</a>
                 </div>
                 <a class="btn btn-danger" href="{{ url_for('auth.logout') }}" id="logout-btn" role="button">
                     <i class="fa-solid fa-building-circle-arrow-right"></i> Logout
