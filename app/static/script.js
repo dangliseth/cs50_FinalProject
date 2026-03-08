@@ -3,14 +3,45 @@ setTimeout(() => {
     $("div.flashes").fadeOut("slow")
 }, 3000)
 
-$("button, a").hover(function() {
-    const $icon = $(this).find("i[class*='fa-']");
+$("button, a").hover(
+    function() {$(this).find("i[class*='fa-']").addClass("fa-beat");}, 
+    function() {$(this).find("i[class*='fa-']").removeClass("fa-beat");}
+);
 
-    $icon.addClass("fa-beat");
+$("a#logout-btn").hover(function() {
+    const $icon = $(this).find("i");
+
+    $icon.stop(true, true).fadeOut(150, function() {
+        $(this).removeClass("fa-building-circle-arrow-right")
+                .addClass("fa-person-running")
+                .fadeIn(150);
+    });
 }, function() {
-    const $icon = $(this).find("i[class*='fa-']");
+    const $icon = $(this).find("i");
 
-    $icon.removeClass("fa-beat");
+    $icon.stop(true, true).fadeOut(150, function() {
+        $(this).removeClass("fa-person-running")
+                .addClass("fa-building-circle-arrow-right")
+                .fadeIn(150);
+    });
+});
+
+$("nav div[class$='-dropdown']").hover(function() {
+    const items = $(this).find("div[class*='dropdown']");
+
+    clearTimeout($(this).data("timer"));
+
+    items.stop(true, true).removeClass("d-none").addClass("d-grid").fadeIn(150);
+}, function() {
+    const items = $(this).find("div[class*='dropdown']");
+
+    const timer = setTimeout(function() {
+        items.stop(true, true).fadeOut(150, function() {
+            $(this).addClass("d-none").removeClass("d-grid").fadeIn(150);
+        });
+    }, 200);
+
+    $(this).data("timer", timer);
 });
 
 // handle login modal.
@@ -52,25 +83,16 @@ $("#loginModal").on("shown.bs.modal", function() {
     $("#username").focus();
 });
 
-$("#logout-btn").hover((event) => {
-    const $btn = $(event.target);
-    const icon = $btn.find("span.material-symbols-rounded");
-
-    icon.stop(true, true).fadeOut(150, function() {
-        $(this).text("directions_run").fadeIn(150);
-    });
-}, (event) => {
-    const $btn = $(event.target);
-    const icon = $btn.find("span.material-symbols-rounded");
-
-    icon.stop(true, true).fadeOut(150, function() {
-        $(this).text("door_open").fadeIn(150);
-    });
-});
-
 // Use event delegation on the container to handle events for all select elements,
 // including ones that are added dynamically.
 $(document).on("change", "select", (event) => {
     // Find the placeholder option within the specific select that was changed and disable it.
     $(event.target).find('option[value=""]').prop("disabled", true);
+});
+
+$(function() {
+    const elements = "button, a, div[class*='table'], table, tr, th, td"
+
+    $("body *").not(elements).addClass("pe-none");
+    $(elements).addClass("pe-auto");
 });

@@ -24,10 +24,22 @@ $("button#add-subject-btn").on("click", () => {
     labelSubject.attr("for", newIdSubject);
     labelRequired.attr("for", newIdRequired);
 
+    const subjEntryCount = container.children(".subject-entry").length;
+    if (subjEntryCount > 0) {
+        clone.append(`<button type="button"  class="btn btn-outline-danger btn-sm remove-subject-btn">
+                        Remove <i class="fa-solid fa-square-minus"></i>
+                    </button>`)
+    };
 
     // Add the newly created element to the DOM
     container.append(clone);
 });
+
+// Example of how to handle the click for this new button
+$("#subject-container").on("click", ".remove-subject-btn", function() {
+    $(this).closest(".subject-entry").remove();
+});
+
 
 $("form#add-student").on("click", "button#add-enrollment-btn", function() {
     const container = $("#enrollment-container");
