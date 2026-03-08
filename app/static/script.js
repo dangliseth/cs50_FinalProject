@@ -3,14 +3,38 @@ setTimeout(() => {
     $("div.flashes").fadeOut("slow")
 }, 3000)
 
-$("button, a").hover(function() {
-    const $icon = $(this).find("i[class*='fa-']");
+$("button, a").hover(
+    function() {$(this).find("i[class*='fa-']").addClass("fa-beat");}, 
+    function() {$(this).find("i[class*='fa-']").removeClass("fa-beat");}
+);
 
-    $icon.addClass("fa-beat");
+$("a#logout-btn").hover(function() {
+    const $icon = $(this).find("i");
+
+    $icon.stop(true, true).fadeOut(150, function() {
+        $(this).removeClass("fa-building-circle-arrow-right")
+                .addClass("fa-person-running")
+                .fadeIn(150);
+    });
 }, function() {
-    const $icon = $(this).find("i[class*='fa-']");
+    const $icon = $(this).find("i");
 
-    $icon.removeClass("fa-beat");
+    $icon.stop(true, true).fadeOut(150, function() {
+        $(this).removeClass("fa-person-running")
+                .addClass("fa-building-circle-arrow-right")
+                .fadeIn(150);
+    });
+});
+
+$("nav div[class$='-dropdown']").hover(function() {
+    $(this).addClass("position-relative");
+    const items = $(this).find("div[class^='dropdown']");
+
+    items.removeClass("d-none").addClass("d-grid");
+}, function() {
+    const items = $(this).find("div[class^='dropdown']");
+
+    items.addClass("d-none").removeClass("d-grid");
 });
 
 // handle login modal.
@@ -50,22 +74,6 @@ $("#loginForm").on("submit", (event) => {
 
 $("#loginModal").on("shown.bs.modal", function() {
     $("#username").focus();
-});
-
-$("#logout-btn").hover((event) => {
-    const $btn = $(event.target);
-    const icon = $btn.find("span.material-symbols-rounded");
-
-    icon.stop(true, true).fadeOut(150, function() {
-        $(this).text("directions_run").fadeIn(150);
-    });
-}, (event) => {
-    const $btn = $(event.target);
-    const icon = $btn.find("span.material-symbols-rounded");
-
-    icon.stop(true, true).fadeOut(150, function() {
-        $(this).text("door_open").fadeIn(150);
-    });
 });
 
 // Use event delegation on the container to handle events for all select elements,
