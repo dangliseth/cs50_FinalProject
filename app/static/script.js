@@ -29,16 +29,24 @@ $("a#logout-btn").hover(function() {
 $("nav div[class$='-dropdown']").hover(function() {
     const items = $(this).find("div[class*='dropdown']");
 
+    const btn = $(this).find("a#students-nav-btn");
+    const icon = btn.find("i").detach();
+    btn.text("All Students").append(icon);
+
     clearTimeout($(this).data("timer"));
 
     items.stop(true, true).removeClass("d-none").addClass("d-grid").fadeIn(150);
 }, function() {
     const items = $(this).find("div[class*='dropdown']");
+    const btn = $(this).find("a#students-nav-btn");
 
     const timer = setTimeout(function() {
         items.stop(true, true).fadeOut(150, function() {
             $(this).addClass("d-none").removeClass("d-grid").fadeIn(150);
         });
+
+        const icon = btn.find("i").detach();
+        btn.text("Students").append(icon);
     }, 200);
 
     $(this).data("timer", timer);
@@ -91,7 +99,7 @@ $(document).on("change", "select", (event) => {
 });
 
 $(function() {
-    const elements = "button, a, div[class*='table'], table, tr, th, td"
+    const elements = "button, a, div[class*='table'], table, tr, th, td, input, form"
 
     $("body *").not(elements).addClass("pe-none");
     $(elements).addClass("pe-auto");

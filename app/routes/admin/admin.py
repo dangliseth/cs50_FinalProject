@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
-from sqlalchemy import exc as mysql_errors
+from sqlalchemy import exc as mysql_errors, or_
 
 from app.db import db
 from app.decorators import admin_required
@@ -8,6 +8,7 @@ from app.models import Students, Programs, Subjects, ProgramSubjects, StudentPro
 
 bp = Blueprint("admin", __name__, template_folder="templates", static_folder="static")
 
+# Includes Modal Functions
 @bp.route("/home")
 @admin_required
 def home():
@@ -31,6 +32,33 @@ def home():
                            recent_students=recent_students,
                            recent_enrolled_students=recent_enrolled_students,
                            all_subjects=all_subjects)
+
+@bp.route("/students")
+@admin_required
+def view_students_table():
+    stmt = db.query(Students).join(StudentPrograms)
+
+    search_query = request.args.get("q")
+    status = request.args.get("status")
+
+    columns = [col for col in Students.__table__.columns if col.name.lower() != "user_id"]
+    columns.append(StudentPrograms.status)
+
+    if status:
+        stmt = stmt.filter(StudentPrograms.status == status)
+
+    if search_query:
+        fltr = [col.ilike(f"%{search_query}%") for col in columns]
+        stmt = stmt.filter(or_(*fltr))
+
+    all_students = stmt.distinct().all()
+
+    return render_template("view_students_table.html", 
+                           Students=Students, 
+                           all_students=all_students, 
+                           columns=columns, 
+                           status=status,
+                           search_query=search_query)
 
 @bp.route("/student/<int:student_id>")
 @admin_required
@@ -226,9 +254,7 @@ def add_program():
                                     }), 400
                 
                 newPS = ProgramSubjects(programCode=code, subjectCode=subject, required=isRequired)
-                # Use merge here! If the subject is already assigned to the program,
-                # this will simply update the 'required' status instead of crashing with a Duplicate Entry error.
-                db.merge(newPS)
+                db.add(newPS)
             
             db.commit()
 
