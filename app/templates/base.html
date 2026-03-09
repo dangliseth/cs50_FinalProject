@@ -32,10 +32,10 @@
                 </button>
                 <div class="collapse navbar-collapse flex-row-reverse" id="navbarSupportedContent">
                     <div class="d-block students-dropdown">
-                        <a class="btn btn-dark" href="#" id="students-nav-btn" role="button">Students<i class="fa-solid fa-sort-down fa-bounce"></i></a>
+                        <a class="btn btn-dark" href="{{ url_for('admin.view_students_table') }}" id="students-nav-btn" role="button">Students<i class="fa-solid fa-sort-down fa-bounce"></i></a>
                         <div class="dropdown text-bg-dark d-none p-2 position-absolute rounded-4">
-                            <a class="btn btn-dark" href="#" role="button">Enrolled</a>
-                            <a class="btn btn-dark" href="#" role="button">Dropped</a>
+                            <a class="btn btn-dark" href="{{ url_for('admin.view_students_table', status='Enrolled') }}" role="button">Enrolled</a>
+                            <a class="btn btn-dark" href="{{ url_for('admin.view_students_table', status='Dropped') }}" role="button">Dropped</a>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,9 @@
                 <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
                     <div class="navbar-nav">
                         {% if request.endpoint != "auth.login" %}
-                            <button type="button" class="nav-link btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal"><span class="material-symbols-rounded">person</span>Log In</button>
+                            <button type="button" class="nav-link btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="fa-solid fa-person-through-window"></i> Log In
+                            </button>
                         {% endif %}
                     </div>
                 </div>
