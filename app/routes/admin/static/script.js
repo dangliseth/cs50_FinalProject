@@ -165,5 +165,25 @@ $("#btn-confirm-drop").on("click", function() {
                 form.submit();
             }
         });
-    }
+    };
+});
+
+// Search Bar Live Update
+let searchDebounceTimer;
+$("#search-bar input#q").on("input", function() {
+    clearTimeout(searchDebounceTimer);
+    const $form = $(this).closest("form");
+
+    if ($(this).val().length > 0) {
+        
+    };
+
+    // Wait 400ms after the user stops typing to avoid flooding the server
+    searchDebounceTimer = setTimeout(() => {
+        $.get($form.attr("action"), $form.serialize(), function(data) {
+            // Parse the full HTML response to find the new table body
+            const newBody = $(data).find("tbody").html();
+            $("table tbody").html(newBody);
+        });
+    }, 400);
 });
