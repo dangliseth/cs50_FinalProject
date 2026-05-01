@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}| Admin Subjects Table{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='styles.css') }}">
+{% endblock%}
+
+{% block body %}
+<div class="container-fluid my-4">
+
+    <div class="card bg-dark my-5">
+        <div class="card-header d-flex flex-row py-3">
+            <h5 class="card-title mb-0 text-white">All Subjects</h5>
+            <!-- Search Bar-->
+             <form action="{{ url_for('admin.view_subjects_table') }}" method="get" id="search-bar" class="d-flex gap-2 ms-auto">
+                <input type="text" name="q" id="q" 
+                        placeholder="Search" value="{% if search_query %}{{ search_query }}{% endif %}">
+                <button type="submit" class="btn btn-light btn-sm">
+                    <i class="fa-solid fa-magnifying-glass"></i> Search
+                </button>
+             </form>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-light mb-0">
+                    <thead>
+                        <tr>
+                            {% for c in columns %}
+                                {% if c.name == "code" and c.table.name == "programs" %}
+                                    <th>Programs Association</th>
+                                {% else %}
+                                    <th>{{ c.name | humanize }}{% if c.name == "required" %}?{% endif %}</th>
+                                {% endif %}
+                            {% endfor %}
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject in subjects %}
+                        <tr>
+                            {% for col in columns %}
+                            <td>
+                                {# First, we check if the attribute exists directly on the subject object #}
+                                
+                                {# For related data, we need to handle it specially. #}
+                                {# This handles the 'code' from the 'programs' table #}
+                                {% if col.name == 'code' and col.table.name == 'programs' %}
+                                    {% for ps in subject.program_subjects %}{{ ps.programs.title }}{% if not loop.last %}<br> {% endif %}{% endfor %}
+                                {# This handles the 'required' from the 'program_subjects' table #}
+                                {% elif col.name == 'required' %}
+                                    {% if subject.program_subjects | selectattr("required", "equalto", "True") | list %}
+                                    {% for ps in subject.program_subjects %}
+                                    <span class="badge bg-info">
+                                        {{ ps.programCode }}</span>{% if not loop.last %}<br>{% endif %}{% endfor %}{% endif %}
+                                {% elif subject | attr(col.name) %}
+                                    {{ subject | attr(col.name) }}
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                            <td>
+                                <a href="#" class="btn btn-sm btn-primary">View<i class="fa-regular fa-eye ms-1"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('admin.static', filename='script.js') }}"></script>
+{% endblock %}

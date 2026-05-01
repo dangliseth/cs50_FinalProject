@@ -14,9 +14,9 @@
             <h5 class="card-title mb-0 text-white">{% if status %}{{ status }}{% else %} All {% endif %} Students</h5>
             <!-- Search Bar-->
              <form action="{{ url_for('admin.view_students_table') }}" method="get" id="search-bar" class="d-flex gap-2 ms-auto">
-                <input type="text" name="q" class="form-control form-control-sm" id="q" 
+                <input type="text" name="q" id="q" 
                         placeholder="Search" value="{% if search_query %}{{ search_query }}{% endif %}">
-                <button type="submit" class="btn btn-info btn-sm">
+                <button type="submit" class="btn btn-light btn-sm">
                     <i class="fa-solid fa-magnifying-glass"></i> Search
                 </button>
              </form>

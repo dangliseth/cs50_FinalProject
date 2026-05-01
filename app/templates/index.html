@@ -5,8 +5,76 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container-lg">
-        <div class="row text-center">
+    <div class="container-fluid p-0 mb-5">
+        <div id="heroCarousel" class="carousel slide carousel-fade shadow-lg" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="5000">
+                    <img src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="d-block w-100 object-fit-cover" style="height: 70vh;" alt="Students on campus">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-4 mb-5">
+                        <h2 class="display-4 fw-bold">Welcome to My School</h2>
+                        <p class="lead">Empowering the next generation of leaders through excellence in education.</p>
+                    </div>
+                </div>
+                <div class="carousel-item" data-bs-interval="5000">
+                    <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=2070&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 70vh;" alt="Modern library">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-4 mb-5">
+                        <h2 class="display-4 fw-bold">State-of-the-Art Facilities</h2>
+                        <p class="lead">Discover our modern libraries, laboratories, and collaborative spaces.</p>
+                    </div>
+                </div>
+                <div class="carousel-item" data-bs-interval="5000">
+                    <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 70vh;" alt="Students collaborating">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-4 mb-5">
+                        <h2 class="display-4 fw-bold">A Thriving Community</h2>
+                        <p class="lead">Join a diverse and inclusive environment where every student matters.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="container-lg my-5 pe-auto">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body py-5">
+                        <i class="fa-solid fa-graduation-cap fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title fw-bold">Academic Excellence</h4>
+                        <p class="card-text text-muted">We offer a wide range of programs designed to challenge and inspire our students.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body py-5">
+                        <i class="fa-solid fa-users fa-3x text-success mb-3"></i>
+                        <h4 class="card-title fw-bold">Expert Faculty</h4>
+                        <p class="card-text text-muted">Learn from dedicated professors who are leaders in their respective fields.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body py-5">
+                        <i class="fa-solid fa-globe fa-3x text-info mb-3"></i>
+                        <h4 class="card-title fw-bold">Global Opportunities</h4>
+                        <p class="card-text text-muted">Prepare for a globalized world with our international exchange programs.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -5,3 +5,15 @@ button#delete-enroll-program:hover {
     background-color: red;
     color: white;
 }
+
+input#q {
+    background-color: transparent;
+    border: transparent;
+    border-bottom: 3px solid white;
+    color: white;
+}
+input#q:focus {
+    box-shadow: none;
+    outline: none;
+    border-bottom: 2px solid red;
+}

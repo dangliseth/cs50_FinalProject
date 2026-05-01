@@ -10,10 +10,13 @@ $("button#add-subject-btn").on("click", () => {
     const labelRequired = clone.find("label[for^='required']");
     const checkbox = clone.find("input[type='checkbox']");
 
-    // Create a new unique ID. Counting existing subject entries is more robust
-    // than counting all children, in case other elements are present.
-    const newIdSubject = "subject-code-" + container.children(".subject-entry").length;
-    const newIdRequired = "required-" + container.children(".subject-entry").length;
+    // Create a new unique ID based on the last element to avoid duplicates when removing
+    const lastSelectId = container.children(".subject-entry").last().find("select").attr("id");
+    const lastIndex = lastSelectId ? parseInt(lastSelectId.split("-").pop()) : 0;
+    const newIndex = lastIndex + 1;
+
+    const newIdSubject = "subject-code-" + newIndex;
+    const newIdRequired = "required-" + newIndex;
 
     // Set the new ID on the select, reset its value, and link the label to it
     select.attr("id", newIdSubject).prop("selectedIndex", 0);
@@ -26,7 +29,7 @@ $("button#add-subject-btn").on("click", () => {
 
     const subjEntryCount = container.children(".subject-entry").length;
     if (subjEntryCount > 0) {
-        clone.append(`<button type="button"  class="btn btn-outline-danger btn-sm remove-subject-btn">
+        clone.append(`<button type="button" class="btn btn-outline-danger btn-sm remove-subject-btn pe-auto">
                         Remove <i class="fa-solid fa-square-minus"></i>
                     </button>`)
     };
@@ -52,12 +55,12 @@ $("form#add-student").on("click", "button#add-enrollment-btn", function() {
     ).join("");
 
 
-    const newElement = `<div class="col-md d-flex">
-                        <select class="form-select" name="programNames">
+    const newElement = `<div class="col-md d-flex pe-auto">
+                        <select class="form-select pe-auto" name="programNames">
                             <option value="" selected>Select a Program</option>
                             ${optionsHTML}
                         </select>
-                        <button type="button" class="btn btn-sm ms-2" id="delete-enroll-program">
+                        <button type="button" class="btn btn-sm ms-2 delete-enroll-program pe-auto">
                             <i class="fa-solid fa-minus"></i>
                         </button>
                     </div>`;
@@ -69,21 +72,21 @@ $("form#add-student").on("click", "button#add-enrollment-btn", function() {
     };
 });
 
-$("form#add-student").on("click", "button#delete-enroll-program", function() {
+$("form#add-student").on("click", "button.delete-enroll-program", function() {
     const btn = $(this);
     const parent = btn.parent();
     parent.remove();
 
     const container = $("#enrollment-container");
     if (container.children().length < 2 && !$("#add-enrollment-btn").length) {
-        const addBtn = `<button type="button" id="add-enrollment-btn" class="btn btn-outline-secondary">
+        const addBtn = `<button type="button" id="add-enrollment-btn" class="btn btn-outline-secondary pe-auto">
                         Add A Program<i class="fa-solid fa-plus fa-fade"></i>
                         </button>`;
         container.before(addBtn);
     };
 });
 
-$("form#edit-studentForm").on("click", "button#edit-btn", function() {
+$("form#edit-studentForm").on("click", "button.edit-btn", function() {
     const button = $(this);
     const input = button.parent().find("input");
 
@@ -104,7 +107,7 @@ $("form#edit-studentForm").on("click", "button#edit-btn", function() {
 });
 
 
-$("form").on("submit", function(event) {
+$("form[method='post']").on("submit", function(event) {
     event.preventDefault();
 
     const $form = $(this);
@@ -165,5 +168,25 @@ $("#btn-confirm-drop").on("click", function() {
                 form.submit();
             }
         });
-    }
+    };
+});
+
+// Search Bar Live Update
+let searchDebounceTimer;
+$("#search-bar input#q").on("input", function() {
+    clearTimeout(searchDebounceTimer);
+    const $form = $(this).closest("form");
+
+    if ($(this).val().length > 0) {
+        
+    };
+
+    // Wait 400ms after the user stops typing to avoid flooding the server
+    searchDebounceTimer = setTimeout(() => {
+        $.get($form.attr("action"), $form.serialize(), function(data) {
+            // Parse the full HTML response to find the new table body
+            const newBody = $(data).find("tbody").html();
+            $("table tbody").html(newBody);
+        });
+    }, 400);
 });

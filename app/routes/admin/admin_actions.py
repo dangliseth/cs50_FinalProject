@@ -6,73 +6,7 @@ from app.decorators import admin_required
 
 from app.models import Students, Programs, Subjects, ProgramSubjects, StudentPrograms
 
-bp = Blueprint("admin", __name__, template_folder="templates", static_folder="static")
-
-# Includes Modal Functions
-@bp.route("/home")
-@admin_required
-def home():
-    student_count = db.query(Students).count()
-    program_count = db.query(Programs).count()
-    subject_count = db.query(Subjects).count()
-
-    all_subjects = db.query(Subjects).all()
-
-    recent_students = db.query(Students).order_by(Students.id.desc()).limit(10).all()
-    recent_enrolled_students = db.query(Students).join(StudentPrograms).filter(StudentPrograms.status == "Enrolled").order_by(Students.id.desc()).limit(10).all()
-
-    return render_template("home.html", 
-                           student_count=student_count, 
-                           program_count=program_count, 
-                           subject_count=subject_count, 
-                           subjects=Subjects,
-                           programs=Programs,
-                           students=Students,
-                           studentprograms=StudentPrograms,
-                           recent_students=recent_students,
-                           recent_enrolled_students=recent_enrolled_students,
-                           all_subjects=all_subjects)
-
-@bp.route("/students")
-@admin_required
-def view_students_table():
-    stmt = db.query(Students).join(StudentPrograms)
-
-    search_query = request.args.get("q")
-    status = request.args.get("status")
-
-    columns = [col for col in Students.__table__.columns if col.name.lower() != "user_id"]
-    columns.append(StudentPrograms.status)
-
-    if status:
-        stmt = stmt.filter(StudentPrograms.status == status)
-
-    if search_query:
-        fltr = [col.ilike(f"%{search_query}%") for col in columns]
-        stmt = stmt.filter(or_(*fltr))
-
-    all_students = stmt.distinct().all()
-
-    return render_template("view_students_table.html", 
-                           Students=Students, 
-                           all_students=all_students, 
-                           columns=columns, 
-                           status=status,
-                           search_query=search_query)
-
-@bp.route("/student/<int:student_id>")
-@admin_required
-def view_student(student_id):
-    student = db.query(Students).filter(Students.id == student_id).first()
-    
-    # Query Programs AND the status column, then manually attach status to the Program objects
-    results = db.query(Programs, StudentPrograms.status).join(StudentPrograms).filter(StudentPrograms.studentID == student_id).all()
-    programs = []
-    for prog, status in results:
-        prog.status = status
-        programs.append(prog)
-
-    return render_template("view_student.html", student=student, Students=Students, programs=programs)
+from . import bp
 
 # AJAX - Modal Function
 @bp.route("/student/<int:student_id>/edit", methods=["POST"])
@@ -215,23 +149,15 @@ def add_program():
             
             # subject and subject requirement dictionary.
             subjectsAndRequirements = {}
-            i= 0
-            while True:
-                # check if there are still subjects in form.
-                subjectKey = f"subject-code-{i}"
-                if subjectKey not in request.form:
-                    break
-
-                subject = request.form[subjectKey]
-
-                if subject:
-                    # if subject is not empty, assign requirement value: True or False.
-                    requiredKey = f"required-{i}"
-                    isRequired = requiredKey in request.form
-
-                    subjectsAndRequirements[subject] = isRequired
-                
-                i += 1
+            for key in request.form:
+                if key.startswith("subject-code-"):
+                    subject = request.form[key]
+                    if subject:
+                        # if subject is not empty, assign requirement value: True or False.
+                        index = key.split("-")[-1]
+                        requiredKey = f"required-{index}"
+                        isRequired = requiredKey in request.form
+                        subjectsAndRequirements[subject] = isRequired
 
             if not all([code, title, name, subjectsAndRequirements]):
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":

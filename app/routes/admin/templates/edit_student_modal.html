@@ -12,7 +12,7 @@
                         {% if not col.primary_key and not col.foreign_keys %}
                             <div class="mb-2">
                                 <label for="{{ col.name }}" class="form-label">{{ col.name | humanize }}</label>
-                                <button type="button" class="btn btn-outline-primary btn-sm ms-1" id="edit-btn">
+                                <button type="button" class="btn btn-outline-primary btn-sm ms-1 edit-btn">
                                     <i class="fa-regular fa-pen-to-square"></i>Edit</button>
                                 <input type="text" 
                                     id="{{ col.name }}" 
