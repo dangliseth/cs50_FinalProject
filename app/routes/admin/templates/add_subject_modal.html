@@ -11,14 +11,14 @@
                     {% if col.name != "id" %}                    
                         <div class="form-floating my-2 position-relative">
                             <input type="text" 
-                                id="{{ col.name }}" 
+                                id="subject-{{ col.name }}" 
                                 name="{{ col.name }}" 
                                 class="form-control" 
                                 placeholder="name123"
                                 {% if not col.nullable %}required{% endif %}>
-                            <label for="{{ col.name }}">{{ col.name | humanize }}</label>
+                            <label for="subject-{{ col.name }}">{{ col.name | humanize }}</label>
                             {% if not col.nullable %}
-                                <span id="{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
+                                <span id="subject-{{ col.name }}HelpInline" class="position-absolute top-50 end-0 translate-middle-y me-3 text-danger">
                                     <i class="fa-solid fa-asterisk fa-2xs" style="color: red;"></i>
                                 </span>
                             {% endif %}

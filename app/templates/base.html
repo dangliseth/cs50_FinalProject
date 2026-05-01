@@ -41,7 +41,7 @@
                 </div>
                 <a class="navbar-brand mx-5" href="{{ url_for('main.index') }}" style="font-family: UnifrakturCook, sans-serif;"><h3>My School</h3></a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <a class="btn btn-dark" href="#" id="subjects-nav-btn" role="button">Subjects</a>
+                    <a class="btn btn-dark" href="{{ url_for('admin.view_subjects_table') }}" id="subjects-nav-btn" role="button">Subjects</a>
                     <a class="btn btn-dark" href="#" id="programs-nav-btn" role="button">Programs</a>
                 </div>
                 <a class="btn btn-danger" href="{{ url_for('auth.logout') }}" id="logout-btn" role="button">

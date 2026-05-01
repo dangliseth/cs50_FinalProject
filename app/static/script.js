@@ -99,7 +99,7 @@ $(document).on("change", "select", (event) => {
 });
 
 $(function() {
-    const elements = "button, a, div[class*='table'], table, tr, th, td, input, form"
+    const elements = "button, a, div[class*='table'], table, tr, th, td, input, form, select, label, textarea"
 
     $("body *").not(elements).addClass("pe-none");
     $(elements).addClass("pe-auto");
